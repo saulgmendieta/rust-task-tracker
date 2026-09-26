@@ -1,0 +1,16 @@
+{
+  // Keep: inferred type hints (e.g. `: i32` after a variable) — they teach you types
+  "rust-analyzer.inlayHints.typeHints.enable": true,
+
+  // Off: argument-name labels inside calls, e.g. Task::new(id: next_id, description: ...)
+  "rust-analyzer.inlayHints.parameterHints.enable": false,
+  // Off: type labels at the end of each line in a method chain
+  "rust-analyzer.inlayHints.chainingHints.enable": false,
+  // Off: "// fn main" labels after closing braces
+  "rust-analyzer.inlayHints.closingBraceHints.enable": false,
+
+  // Run clippy (not just check) on save, so its suggestions show as squiggles
+  "rust-analyzer.check.command": "clippy",
+
+  "editor.inlayHints.enabled": "offUnlessPressed"
+}
