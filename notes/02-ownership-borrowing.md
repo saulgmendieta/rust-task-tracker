@@ -86,7 +86,9 @@ These types are **copied** instead of moved. The old variable keeps working:
 
 > ⚠️ **Slide correction:** the slide lists "references (both readable and writable)" as Copy. **`&mut T` is NOT Copy.** If it were, you could have two writers at once and break rule 5. Rust just re-borrows `&mut` automatically in most calls, which is why it *looks* copied.
 
-`String`, `Vec`, and your own structs are **moved**. They own heap data, and copying them silently would be expensive. If you really want a second copy, ask for it: `.clone()`. You can also make a small struct Copy with `#[derive(Clone, Copy)]`, but only if all its fields are Copy.
+`String`, `Vec`, and your own structs are **moved**. They own heap data, and copying them silently would be expensive. If you really want a second copy, ask for it: `.clone()`. You can also make a small struct Copy with `#[derive(Clone, Copy)]`, but only if all its fields are Copy. Clone when the result has to outlive the list or survive changes to it; borrow when I just read it right away.
+
+Copy **task\.id** doesn't give error cause it's a copiable type (i32), instead with **task.description** (String) 
 
 ### Answers to my open questions
 

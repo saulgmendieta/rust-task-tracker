@@ -1,7 +1,7 @@
 use colour::green_ln;
 use std::io;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Task {
     id: i32,
     description: String,
@@ -20,7 +20,8 @@ impl Task {
 
 #[derive(Debug)]
 struct TaskList {
-    tasks: Vec<Task>
+    tasks: Vec<Task>,
+    archived: Vec<Task>
 }
 
 impl TaskList {
@@ -28,8 +29,9 @@ impl TaskList {
     fn new() -> Self {
 
         let tasks = Vec::new();
+        let archived = Vec::new();
 
-        Self { tasks }
+        Self { tasks, archived }
     }
 
     fn find_next_id(&self) -> i32 {
@@ -59,30 +61,20 @@ impl TaskList {
         self.tasks.push(task);
     }
 
-    fn complete_task(&mut self, id: i32) -> i32 {
+    fn complete_task(&mut self, id: i32) {
         let result = self.find_index(id);
+
         if result >= 0 {
             self.tasks[result as usize].completed = true;
-        }
-        result
-    }
-
-    fn rename_task(&mut self, id: i32){
-
-        let result = self.find_index(id);
-        if result == -1 {
+        }  
+        else if result == -1 {
             println!("Task not found");
         }
-        else{
-            println!("Task {} found, write new description", id);
-            let mut new_name = String::new();
-    
-            io::stdin()
-                .read_line(&mut new_name)
-                .unwrap();
-    
-            self.tasks[result as usize].description = new_name.trim_end().to_string();
-        }  
+    }
+
+    fn rename_task(&mut self, id: i32, new_name: String){        
+            
+        self.tasks[id as usize].description = new_name.trim_end().to_string();
     }
 
     fn show_tasks(&self){
@@ -94,6 +86,36 @@ impl TaskList {
                 println!("[ ] {} - {}", task.id, task.description);
             }
         }
+    }
+
+    fn show_titles(&self) -> Vec<String>{
+
+        let mut titles  = Vec::new();
+        
+        for task in &self.tasks {
+            titles.push(task.description.clone());
+        }
+
+        titles
+    }
+
+    fn archive(&mut self){
+
+        let mut i = 0;
+
+        while i < self.tasks.len(){
+            if self.tasks[i].completed{
+                let task = self.tasks.remove(i);
+                self.archived.push(task);
+            }
+            i += 1;
+        }
+
+        println!("Archived: ");
+        for task in &self.archived {
+            println!("{} - {}", task.id, task.description);
+        }
+
     }
 }
 
@@ -146,12 +168,7 @@ fn main() {
 
         else if command == "complete" {
             let index = argument.parse::<usize>().unwrap();            
-            let result = task_list.complete_task(index as i32);
-                        
-            if result == -1 {
-                println!("Task not found");
-                continue;
-            }
+            task_list.complete_task(index as i32);                      
         }
 
         else if command == "print" {
@@ -159,8 +176,48 @@ fn main() {
         }
 
         else if command == "rename" {
-            let index = argument.parse::<usize>().unwrap();       
-            task_list.rename_task(index as i32);
+            let index = argument.parse::<usize>().unwrap();  
+            let result = task_list.find_index(index as i32);  
+
+            if result == -1 {
+                println!("Task not found");
+            }
+            else{
+
+                println!("Task {} found, write new description", index);
+                let mut new_name = String::new();
+        
+                io::stdin()
+                    .read_line(&mut new_name)
+                    .unwrap();
+                
+                task_list.rename_task(index as i32, new_name);
+        
+            }  
+        }
+        
+        else if command == "titles" {
+            let mut titles = task_list.show_titles();
+
+            titles.sort();
+            for title in titles{                
+                println!("{}", title);
+            }
+        }
+        
+        else if command == "titles" {
+            let mut titles = task_list.show_titles();
+
+            titles.sort();
+            for title in titles{                
+                println!("{}", title);
+            }
+        }
+        
+        else if command == "archive" {
+
+            task_list.archive();
+
         }
 
         else if command == "exit" {
