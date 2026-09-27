@@ -44,6 +44,12 @@ impl TaskList {
                 new_id = task.id;
             }
         }
+        for task in &self.archived {
+
+            if task.id > new_id {
+                new_id = task.id;
+            }
+        }
     
         new_id + 1
     }
@@ -108,7 +114,9 @@ impl TaskList {
                 let task = self.tasks.remove(i);
                 self.archived.push(task);
             }
-            i += 1;
+            else{
+                i += 1;
+            }
         }
 
         println!("Archived: ");
@@ -191,18 +199,9 @@ fn main() {
                     .read_line(&mut new_name)
                     .unwrap();
                 
-                task_list.rename_task(index as i32, new_name);
+                task_list.rename_task(result, new_name);
         
             }  
-        }
-        
-        else if command == "titles" {
-            let mut titles = task_list.show_titles();
-
-            titles.sort();
-            for title in titles{                
-                println!("{}", title);
-            }
         }
         
         else if command == "titles" {
