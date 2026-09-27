@@ -1,48 +1,6 @@
-# Rust Manual
+# 01 · Core Concepts (course module 2, "Rust 101" slides)
 
 > **How to use this manual:** each section ends with a **Test yourself** block. Try to answer from memory *before* expanding the answer. If you can't, re-read the section, not the whole course.
-
-**Course:** Rust: The Complete Developer's Guide (Stephen Grider)
-**Progress:** ✅ Setup · ✅ Core Concepts · ⬜ Ownership & Borrowing · ⬜ Lifetimes · ⬜ Enums · ⬜ Modules · ⬜ Errors · ⬜ Iterators · ⬜ Advanced Lifetimes · ⬜ Generics & Traits
-
----
-
-## 0. Project anatomy & Cargo
-
-`cargo new task-tracker` creates:
-
-```
-task-tracker/
-├── src/main.rs    ← your code. fn main() is where the program starts
-├── Cargo.toml     ← project settings + dependencies (like package.json)
-├── Cargo.lock     ← exact installed versions. Cargo manages it. Commit it, never edit it
-├── .gitignore     ← ignores target/
-└── target/        ← compiled output (.exe). Rebuilt on every build, safe to delete
-```
-
-**Rule:** you work in `src/` and `Cargo.toml`. Cargo handles everything else.
-
-| Command | What it does |
-|---|---|
-| `cargo new name` | Create a new project (also runs `git init`) |
-| `cargo run` | Compile + run (debug build → `target/debug/`) |
-| `cargo check` | Only check that it compiles. Much faster than `run`; use it constantly |
-| `cargo build --release` | Optimized build → `target/release/`. Slower to compile, faster to run |
-| `cargo add rand` | Add a crate to `[dependencies]` in Cargo.toml |
-| `cargo fmt` | Auto-format your code to the standard style |
-| `cargo clippy` | Linter: suggests more idiomatic Rust. Run before every commit |
-
-- `edition = "2024"` in Cargo.toml is the Rust *language edition* (a set of language rules), not the compiler version.
-- The first build is slow because it compiles every dependency. After that it only recompiles what changed.
-
-<details><summary>Test yourself</summary>
-
-- Which files do you edit, and which do you never touch? → Edit `src/*` and `Cargo.toml`. Never touch `Cargo.lock` or `target/`.
-- Fastest way to know whether your code compiles? → `cargo check`
-- Where is the .exe? → `target/debug/` (or `target/release/` with `--release`)
-</details>
-
----
 
 ## 1. Structs: data grouped together
 
@@ -403,10 +361,4 @@ fn main() {
 
 ---
 
-## Open questions → to answer during Ownership & Borrowing
-
-*(Write here every error or doubt you hit while building the task tracker.)*
-
-- Why does `shuffle` need `&mut self` and not just `self`? What happens to `deck` if it takes `self`?
-- Why `&mut rng` when passing it to `shuffle`?
--
+← [00 · Basics](00-basics.md) · [Index](README.md) · [02 · Ownership & Borrowing](02-ownership-borrowing.md) →

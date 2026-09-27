@@ -1,6 +1,7 @@
 use colour::green_ln;
 use std::io;
 
+#[derive(Debug)]
 struct Task {
     id: i32,
     description: String,
@@ -15,12 +16,9 @@ impl Task {
             completed: false,
         }
     }
-
-    fn complete_task(&mut self) {
-        self.completed = true;
-    }
 }
 
+#[derive(Debug)]
 struct TaskList {
     tasks: Vec<Task>
 }
@@ -61,8 +59,34 @@ impl TaskList {
         self.tasks.push(task);
     }
 
-    fn print_tasks(&self) {
+    fn complete_task(&mut self, id: i32) -> i32 {
+        let result = self.find_index(id);
+        if result >= 0 {
+            self.tasks[result as usize].completed = true;
+        }
+        result
+    }
 
+    fn rename_task(&mut self, id: i32){
+
+        let result = self.find_index(id);
+        if result == -1 {
+            println!("Task not found");
+        }
+        else{
+            println!("Task {} found, write new description", id);
+            let mut new_name = String::new();
+    
+            io::stdin()
+                .read_line(&mut new_name)
+                .unwrap();
+    
+            self.tasks[result as usize].description = new_name.trim_end().to_string();
+        }  
+    }
+
+    fn show_tasks(&self){
+        
         for task in &self.tasks {
             if task.completed {
                 green_ln!("[X] {} - {}",task.id, task.description);
@@ -73,13 +97,13 @@ impl TaskList {
     }
 }
 
+
 fn main() {
     let mut task_list = TaskList::new();
 
     let initial_tasks = ["Learn Rust structs",
                             "Install Rust",
                             "Push project to GitHub"];
-
 
     for task in initial_tasks {
 
@@ -92,10 +116,10 @@ fn main() {
             )
         );
     }
-    task_list.tasks[1].complete_task();
+    task_list.complete_task(2);
 
     println!("Tasks ({}):", task_list.tasks.len());
-    task_list.print_tasks();
+    task_list.show_tasks();
 
     let mut running = true;
 
@@ -121,19 +145,24 @@ fn main() {
         }
 
         else if command == "complete" {
-            let index = argument.parse::<usize>().unwrap();
-            let result = task_list.find_index(index as i32);
-            
+            let index = argument.parse::<usize>().unwrap();            
+            let result = task_list.complete_task(index as i32);
+                        
             if result == -1 {
                 println!("Task not found");
                 continue;
             }
-            task_list.tasks[result as usize].complete_task();
         }
 
         else if command == "print" {
-            task_list.print_tasks();
+            task_list.show_tasks();
         }
+
+        else if command == "rename" {
+            let index = argument.parse::<usize>().unwrap();       
+            task_list.rename_task(index as i32);
+        }
+
         else if command == "exit" {
             running = false;
         }
