@@ -125,6 +125,11 @@ impl TaskList {
         }
 
     }
+
+    fn get_task(&self, id: i32) -> &Task{
+        let result = self.find_index(id);
+        &self.tasks[result as usize]
+    }
 }
 
 
@@ -147,6 +152,7 @@ fn main() {
         );
     }
     task_list.complete_task(2);
+    let _t_task = task_list.get_task(2);
 
     println!("Tasks ({}):", task_list.tasks.len());
     task_list.show_tasks();
